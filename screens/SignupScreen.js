@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, Alert, StyleSheet } from 'react-native';
+import { apiUrl } from '../config';
 
 const SignupScreen = () => {
   const [username, setUsername] = useState('');
@@ -7,7 +8,7 @@ const SignupScreen = () => {
   const [password, setPassword] = useState('');
 
   const handleRegister = () => {
-    fetch('http://127.0.0.1:8000/register', {
+    fetch(`${apiUrl}/register`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -16,15 +17,16 @@ const SignupScreen = () => {
     })
       .then(response => response.json())
       .then(data => {
-        if (data.success) {
-          Alert.alert('Регистрация успешна!');
+        if (data.message) {
+          Alert.alert('Регистрация успешна!', data.message);
           navigation.navigate('Login'); // Переход на экран Login
         } else {
-          Alert.alert('Ошибка регистрации', data.message);
+          Alert.alert('Ошибка регистрации', data.error);
         }
       })
       .catch(error => {
         Alert.alert('Ошибка', 'Что-то пошло не так');
+        console.log(error);
       });
   };
 
@@ -59,7 +61,7 @@ const SignupScreen = () => {
       />
 
       <TouchableOpacity style={styles.button} onPress={handleRegister}>
-        <Text style={styles.buttonText}>Зарегистрироваться</Text>
+        <Text style={styles.buttonText}>Signup</Text>
       </TouchableOpacity>
     </View>
   );

@@ -1,12 +1,15 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, Image, StyleSheet, Button, ActivityIndicator, Alert, TouchableOpacity } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { apiUrl } from '../config';
 
-const ProfileScreen = ({ navigation }) => {
+const ProfileScreen = ({ navigation, route }) => {
+  const { userId } = route.params;
   const [userData, setUserData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [token, setToken] = useState(null);
+  const [currentUserId, setCurrentUserId] = useState(null); 
 
   useEffect(() => {
     const getToken = async () => {
@@ -24,7 +27,19 @@ const ProfileScreen = ({ navigation }) => {
       }
     };
 
+    const getUserId = async () => {
+      try {
+        const storedUserId = await AsyncStorage.getItem('user_id');
+        if (storedUserId) {
+          setCurrentUserId(storedUserId);
+        }
+      } catch (e) {
+        setError('Ошибка получения ID пользователя');
+      }
+    };
+
     getToken();
+    getUserId();
   }, []);
 
   useEffect(() => {
@@ -35,7 +50,7 @@ const ProfileScreen = ({ navigation }) => {
 
   const fetchProfileData = async (token) => {
     try {
-      const response = await fetch('http://127.0.0.1:8000/profile', {
+      const response = await fetch(`${apiUrl}/profile?user_id=${userId}`, {
         method: 'GET',
         headers: {
           'Authorization': `Bearer ${token}` // передача токена
@@ -85,13 +100,15 @@ const ProfileScreen = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
-      <Image source={{ uri: `http://127.0.0.1:8000/static/profile_pics/${userData.profile_picture}` }} style={styles.avatar} />
+      <Image source={{ uri: `${apiUrl}/static/profile_pics/${userData.profile_picture}` }} style={styles.avatar} />
 
       <Text style={styles.title}>Профиль</Text>
       <Text style={styles.text}>Биография: {userData.bio}</Text>
       <Text style={styles.text}>Возраст: {userData.age}</Text>
 
-      <Button title="Изменить профиль" onPress={() => navigation.navigate('EditProfile')} />
+      {currentUserId == userId && (
+        <Button title="Изменить профиль" onPress={() => navigation.navigate('EditProfile')} />
+      )}
       <Button
         title="Выйти"
         onPress={() => {
