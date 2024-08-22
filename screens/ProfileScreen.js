@@ -113,6 +113,7 @@ const ProfileScreen = ({ navigation, route }) => {
         title="Выйти"
         onPress={() => {
           AsyncStorage.removeItem('token');
+          AsyncStorage.removeItem('user_id');
           navigation.navigate('Login');
         }}
       />

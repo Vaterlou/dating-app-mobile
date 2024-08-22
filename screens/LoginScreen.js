@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Alert, StyleSheet } from 'react-native';
 import { Input, Button, Text, ThemeProvider } from 'react-native-elements';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { GoogleSignin, statusCodes } from '@react-native-google-signin/google-signin';
 import { apiUrl } from '../config';
 
 const theme = {
@@ -45,6 +46,14 @@ const LoginScreen = ({ navigation }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
+  useEffect(() => {
+    GoogleSignin.configure({
+      iosClientId: '185723400285-hcm6nnmi4hefsg9mukg57iioh7msn8em.apps.googleusercontent.com',
+      webClientId: '185723400285-e9eejp7m7a8jmgfpfctbea4bft39ma12.apps.googleusercontent.com',
+      offlineAccess: true,
+    });
+  }, []);
+
   const handleRegister = () => {
     navigation.navigate('Signup');
   };
@@ -85,6 +94,41 @@ const LoginScreen = ({ navigation }) => {
       });
   };
 
+  const handleGoogleLogin = async () => {
+    try {
+      await GoogleSignin.hasPlayServices();
+      const userInfo = await GoogleSignin.signIn();
+      console.log('User Info:', userInfo);
+      const token = userInfo.idToken;
+      
+      // Отправка данных на ваш сервер
+      const response = await fetch(`${apiUrl}/google-login`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ token }),
+      });
+      console.log(response);
+      const data = await response.json();
+
+      if (!data.error) {
+        saveToken(data.token);
+        saveUserId(data.user_id);
+        navigation.navigate('MainTabs');
+      } else {
+        Alert.alert('Ошибка', data.error);
+      }
+    } catch (error) {
+      if (error.code === statusCodes.SIGN_IN_CANCELLED) {
+        Alert.alert('Отмена', 'Вход через Google был отменен');
+      } else {
+        console.error(error);
+        Alert.alert('Ошибка', 'Не удалось выполнить вход через Google');
+      }
+    }
+  };
+
   return (
     <ThemeProvider theme={theme}>
       <View style={styles.container}>
@@ -101,12 +145,8 @@ const LoginScreen = ({ navigation }) => {
           secureTextEntry
         />
         <Button title="Login" onPress={handleLogin} />
-        <Button
-          title="Singup"
-          type="outline"
-          onPress={handleRegister}
-          containerStyle={styles.registerButton}
-        />
+        <Button title="Login with Google" onPress={handleGoogleLogin} containerStyle={styles.googleLoginButton} />
+        <Button title="Singup" type="outline" onPress={handleRegister} containerStyle={styles.registerButton} />
       </View>
     </ThemeProvider>
   );
@@ -122,6 +162,9 @@ const styles = StyleSheet.create({
   title: {
     marginBottom: 20,
     textAlign: 'center',
+  },
+  googleLoginButton: {
+    marginTop: 3,
   },
   registerButton: {
     marginTop: 10,

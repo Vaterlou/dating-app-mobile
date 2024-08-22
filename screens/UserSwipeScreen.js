@@ -3,6 +3,7 @@ import { View, Text, Image, StyleSheet, ActivityIndicator, Alert } from 'react-n
 import Swiper from 'react-native-deck-swiper';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { apiUrl } from '../config';
+import { getDistance } from 'geolib';
 
 const UserSwipeScreen = () => {
   const [users, setUsers] = useState([]);
@@ -111,8 +112,11 @@ const UserSwipeScreen = () => {
         renderCard={(user) => (
           <View style={styles.card}>
             <Image source={{ uri: `${apiUrl}/static/profile_pics/${user.profile_picture}` }} style={styles.avatar} />
+            <View style={styles.infoContainer}>
             <Text style={styles.name}>{user.username}</Text>
             <Text style={styles.age}>{user.age} лет</Text>
+            <Text>Расстояние: {user.distance} meters</Text>
+            </View>
           </View>
         )}
         onSwipedLeft={(cardIndex) => console.log('Swiped left:', users[cardIndex].username)}
@@ -129,7 +133,7 @@ const UserSwipeScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f8f8f8',
+    backgroundColor: '#6200ee',
   },
   card: {
     flex: 1,
@@ -139,12 +143,21 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     elevation: 4,
     padding: 20,
+    marginTop: -50,
   },
   avatar: {
-    width: 100,
-    height: 100,
-    borderRadius: 50,
-    marginBottom: 10,
+    width: '100%',
+    height: '80%',
+    borderRadius: 10,
+    marginTop: -180,
+  },
+  infoContainer: {
+    marginTop: 10,  // Увеличьте отступ сверху, если нужно
+    padding: 10,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    borderRadius: 10,
+    width: '100%',
+    alignItems: 'center',  // Центрирование текста
   },
   name: {
     fontSize: 22,

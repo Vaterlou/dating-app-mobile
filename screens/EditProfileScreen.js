@@ -12,6 +12,18 @@ const EditProfileScreen = ({ navigation }) => {
   const [latitude, setLatitude] = useState(null);
   const [longitude, setLongitude] = useState(null);
   const [avatar, setAvatar] = useState(null); // Добавлено состояние для аватара
+  const [currentUserId, setCurrentUserId] = useState(null); 
+
+  const getUserId = async () => {
+    try {
+      const storedUserId = await AsyncStorage.getItem('user_id');
+      if (storedUserId) {
+        setCurrentUserId(storedUserId);
+      }
+    } catch (e) {
+      setError('Ошибка получения ID пользователя');
+    }
+  };
 
   useEffect(() => {
     const requestLocationPermission = async () => {
@@ -42,6 +54,8 @@ const EditProfileScreen = ({ navigation }) => {
       },
       { enableHighAccuracy: true, timeout: 20000, maximumAge: 1000 }
     );
+
+    getUserId();
   }, []);
 
   const handleSave = async () => {
@@ -55,15 +69,14 @@ const EditProfileScreen = ({ navigation }) => {
       formData.append('latitude', latitude);
       formData.append('longitude', longitude);
 
-      formData.append('avatar', {
-        uri: avatar.uri,
-        type: avatar.type,
-        name: avatar.filename == undefined ? "1.jpg" : avatar.filename,
-      });
+      if(avatar){
+        formData.append('avatar', {
+          uri: avatar.uri,
+          type: avatar.type,
+          name: avatar.filename == undefined ? "1.jpg" : avatar.filename,
+        });
+      }
       
-      console.log(avatar.uri);
-      console.log(avatar.type);
-      console.log(avatar.filename);
       fetch(`${apiUrl}/profile`, {
         method: 'POST',
         headers: {
@@ -75,7 +88,7 @@ const EditProfileScreen = ({ navigation }) => {
         .then(data => {
           if (!data.error) {
             Alert.alert('Профиль обновлен', data.message);
-            navigation.navigate('Profile');
+            navigation.navigate('Profile', { userId: currentUserId });
           } else {
             Alert.alert('Ошибка', data.error);
           }
