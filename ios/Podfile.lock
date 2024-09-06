@@ -1628,6 +1628,71 @@ PODS:
   - RNGoogleSignin (12.2.1):
     - GoogleSignIn (~> 7.1)
     - React-Core
+  - RNReanimated (3.15.0):
+    - DoubleConversion
+    - glog
+    - hermes-engine
+    - RCT-Folly (= 2024.01.01.00)
+    - RCTRequired
+    - RCTTypeSafety
+    - React-Core
+    - React-debug
+    - React-Fabric
+    - React-featureflags
+    - React-graphics
+    - React-ImageManager
+    - React-NativeModulesApple
+    - React-RCTFabric
+    - React-rendererdebug
+    - React-utils
+    - ReactCodegen
+    - ReactCommon/turbomodule/bridging
+    - ReactCommon/turbomodule/core
+    - RNReanimated/reanimated (= 3.15.0)
+    - RNReanimated/worklets (= 3.15.0)
+    - Yoga
+  - RNReanimated/reanimated (3.15.0):
+    - DoubleConversion
+    - glog
+    - hermes-engine
+    - RCT-Folly (= 2024.01.01.00)
+    - RCTRequired
+    - RCTTypeSafety
+    - React-Core
+    - React-debug
+    - React-Fabric
+    - React-featureflags
+    - React-graphics
+    - React-ImageManager
+    - React-NativeModulesApple
+    - React-RCTFabric
+    - React-rendererdebug
+    - React-utils
+    - ReactCodegen
+    - ReactCommon/turbomodule/bridging
+    - ReactCommon/turbomodule/core
+    - Yoga
+  - RNReanimated/worklets (3.15.0):
+    - DoubleConversion
+    - glog
+    - hermes-engine
+    - RCT-Folly (= 2024.01.01.00)
+    - RCTRequired
+    - RCTTypeSafety
+    - React-Core
+    - React-debug
+    - React-Fabric
+    - React-featureflags
+    - React-graphics
+    - React-ImageManager
+    - React-NativeModulesApple
+    - React-RCTFabric
+    - React-rendererdebug
+    - React-utils
+    - ReactCodegen
+    - ReactCommon/turbomodule/bridging
+    - ReactCommon/turbomodule/core
+    - Yoga
   - RNScreens (3.34.0):
     - DoubleConversion
     - glog
@@ -1749,6 +1814,7 @@ DEPENDENCIES:
   - "RNCAsyncStorage (from `../node_modules/@react-native-async-storage/async-storage`)"
   - RNGestureHandler (from `../node_modules/react-native-gesture-handler`)
   - "RNGoogleSignin (from `../node_modules/@react-native-google-signin/google-signin`)"
+  - RNReanimated (from `../node_modules/react-native-reanimated`)
   - RNScreens (from `../node_modules/react-native-screens`)
   - RNSVG (from `../node_modules/react-native-svg`)
   - RNVectorIcons (from `../node_modules/react-native-vector-icons`)
@@ -1904,6 +1970,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-gesture-handler"
   RNGoogleSignin:
     :path: "../node_modules/@react-native-google-signin/google-signin"
+  RNReanimated:
+    :path: "../node_modules/react-native-reanimated"
   RNScreens:
     :path: "../node_modules/react-native-screens"
   RNSVG:
@@ -1988,6 +2056,7 @@ SPEC CHECKSUMS:
   RNCAsyncStorage: ec53e44dc3e75b44aa2a9f37618a49c3bc080a7a
   RNGestureHandler: 939f21fabf5d45a725c0bf175eb819dd25cf2e70
   RNGoogleSignin: 08dc4ba7eac2096c7fecfe109f0950fa4683c803
+  RNReanimated: 74413c59c47123d7144db601d065627c75c746a3
   RNScreens: 19719a9c326e925498ac3b2d35c4e50fe87afc06
   RNSVG: b986585e367f4a49d8aa43065066cc9c290b3d9b
   RNVectorIcons: ef957b2a1cd5efb71e53397257ec4ccffa34d0c4

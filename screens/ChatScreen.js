@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TextInput, Button, FlatList, StyleSheet, Image } from 'react-native';
+import { View, Text, TextInput, Button, FlatList, StyleSheet, Image, Alert } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
 import Video from 'react-native-video';
@@ -12,6 +12,7 @@ const ChatScreen = ({ route }) => {
   const [error, setError] = useState(null);
   const [token, setToken] = useState(null);
   const [media, setMedia] = useState(null);
+  const [currentUserId, setCurrentUserId] = useState(null); 
 
   useEffect(() => {
     const getToken = async () => {
@@ -27,6 +28,18 @@ const ChatScreen = ({ route }) => {
       }
     };
 
+    const getUserId = async () => {
+      try {
+        const storedUserId = await AsyncStorage.getItem('user_id');
+        if (storedUserId) {
+          setCurrentUserId(storedUserId);
+        }
+      } catch (e) {
+        setError('Ошибка получения ID пользователя');
+      }
+    };
+
+    getUserId();
     getToken();
   }, []);
 
@@ -35,6 +48,10 @@ const ChatScreen = ({ route }) => {
       fetchMessages();
     }
   }, [token]);
+
+  useEffect(() => {
+    Alert.alert('Медиа загружено!', '');
+  }, [media]);
 
   const getMediaType = (filename) => {
     const extension = filename.split('.').pop().toLowerCase();
@@ -106,7 +123,7 @@ const ChatScreen = ({ route }) => {
   };
 
   const sendMessage = async () => {
-    if (!newMessage) return;
+    if (!newMessage && !media) return;
 
     const formData = new FormData();
     formData.append('recipient_id', recipientId);
@@ -171,16 +188,15 @@ const ChatScreen = ({ route }) => {
             {item.media_url ? (
               getMediaType(item.media_url) == 'image' ? (
                 <Image
-                  source={{ uri: `${apiUrl}/static/uploads/${item.media_url}` }}
+                  source={{ uri: `${apiUrl}/static/uploads/${item.sender_id}/${item.media_url}` }}
                   style={styles.media}
                   resizeMode="contain"
                 />
               ) : getMediaType(item.media_url) == 'video' ? (
                 <Video
-                  source={{ uri: `${apiUrl}/static/uploads/${item.media_url}` }}
-                  style={styles.media}
+                  source={{ uri: `${apiUrl}/static/uploads/${item.sender_id}/${item.media_url}` }}
+                  style={styles.videoMedia}
                   resizeMode="contain"
-                  controls
                 />
               ) : null
             ) : null}
@@ -238,9 +254,15 @@ const styles = StyleSheet.create({
   },
   media: {
     width: '100%',
-    height: 200,
+    height: '100%',
     marginTop: 10,
-    borderRadius: 5,
+    borderRadius: 50,
+  },
+  videoMedia: {
+    width: '50%',
+    height: '50%',
+    marginTop: 10,
+    borderRadius: 100,
   },
 });
 

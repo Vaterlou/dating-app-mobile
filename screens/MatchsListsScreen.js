@@ -51,7 +51,7 @@ const MatchsListsScreen = ( {navigation} ) => {
 
   const renderItem = ({ item }) => (
     <View style={styles.itemContainer}>
-      <Image source={{ uri: `${apiUrl}/static/profile_pics/${item.profile_picture}` }} style={styles.avatar} />
+      <Image source={{ uri: `${apiUrl}/static/profile_pics/${item.id}/${item.profile_picture}` }} style={styles.avatar} />
       <View style={styles.textContainer}>
         <Text style={styles.name}>{item.username}</Text>
         <Text style={styles.age}>{item.age} лет</Text>

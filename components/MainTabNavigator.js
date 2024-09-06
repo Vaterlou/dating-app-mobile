@@ -11,6 +11,7 @@ import MapScreen from '../screens/MapScreen';
 // import MapScreen from './MapScreen';
 // import SettingsScreen from './SettingsScreen';
 import { Icon } from 'react-native-elements';
+import {  Image } from 'react-native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createStackNavigator } from '@react-navigation/stack';
 
@@ -21,7 +22,7 @@ const Stack = createStackNavigator();
 const ProfileStack = () => {
   return (
     <Stack.Navigator initialRouteName="Profile">
-      <Stack.Screen name="Profile" component={ProfileScreen} />
+      <Stack.Screen name="Profile" component={ProfileScreen} options={{ headerShown: false }} />
       <Stack.Screen name="EditProfile" component={EditProfileScreen} />
     </Stack.Navigator>
   );
@@ -30,7 +31,7 @@ const ProfileStack = () => {
 const MatchesStack = () => {
     return (
       <Stack.Navigator initialRouteName="Matches">
-        <Stack.Screen name="Matches" component={MatchsListsScreen} />
+        <Stack.Screen name="Matches" component={MatchsListsScreen} options={{ headerShown: false }} />
         <Stack.Screen name="ProfileUser" component={ProfileScreen} />
         <Stack.Screen name="Chat" component={ChatScreen} />
       </Stack.Navigator>
@@ -43,47 +44,29 @@ const MainTabNavigator = () => {
     <Tab.Navigator
       initialRouteName="ProfileStack"
       screenOptions={({ route }) => ({
-        tabBarIcon: ({ color, size }) => {
-          let iconName;
+        tabBarIcon: ({ focused, color, size }) => {
+          let iconSource;
 
           // Определите иконки для каждой вкладки
           switch (route.name) {
             case 'Users':
-              iconName = 'users';
+              iconSource = focused ? require('../assets/icons/home/active.png') : require('../assets/icons/home/inactive.png');
               break;
             case 'Map':
-              iconName = 'map';
+              iconSource = focused ? require('../assets/icons/matches/active.png') : require('../assets/icons/matches/inactive.png');
               break;
             case 'MatchesStack':
-              iconName = 'heart';
+              iconSource = focused ? require('../assets/icons/chat/active.png') : require('../assets/icons/chat/inactive.png');
               break;
             case 'ProfileStack':
-              iconName = 'user';
+              iconSource = focused ? require('../assets/icons/account/active.png') : require('../assets/icons/account/inactive.png');
               break;
             default:
-              iconName = 'home';
+              iconSource = focused ? require('../assets/icons/home/active.png') : require('../assets/icons/home/inactive.png');
           }
 
           // Верните иконку для каждой вкладки
-          return <Icon name={iconName} type='font-awesome' color={color} size={size} />;
-        },
-        tabBarActiveTintColor: '#FF6347', // Цвет активной вкладки
-        tabBarInactiveTintColor: '#7f8c8d', // Цвет неактивных вкладок
-        tabBarStyle: {
-          backgroundColor: '#ffffff', // Цвет фона панели вкладок
-          borderTopWidth: 1, // Толщина верхней границы
-          borderTopColor: '#dddddd', // Цвет верхней границы
-          elevation: 5, // Для Android (тень панели вкладок)
-          shadowOpacity: 0.1, // Для iOS (тень панели вкладок)
-          shadowOffset: { width: 0, height: 2 }, // Для iOS (смещение тени)
-          shadowRadius: 4, // Для iOS (размытие тени)
-        },
-        tabBarLabelStyle: {
-          fontSize: 14, // Размер шрифта текста вкладок
-          fontWeight: 'bold', // Жирное начертание текста вкладок
-        },
-        tabBarIconStyle: {
-          marginBottom: -5, // Смещение иконки
+          return <Image source={iconSource} color={color} size={size} />;
         },
       })}
     >
