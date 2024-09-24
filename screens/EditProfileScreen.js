@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TextInput, Button, StyleSheet, Alert, PermissionsAndroid, Platform, Image } from 'react-native';
+import { View, Text, TextInput, Button, StyleSheet, Alert, Image } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import Geolocation from '@react-native-community/geolocation';
 import { apiUrl } from '../config';
 import { launchImageLibrary } from 'react-native-image-picker';
 
@@ -9,8 +8,6 @@ const EditProfileScreen = ({ navigation }) => {
   const [bio, setBio] = useState('');
   const [age, setAge] = useState('');
   const [loading, setLoading] = useState(false);
-  const [latitude, setLatitude] = useState(null);
-  const [longitude, setLongitude] = useState(null);
   const [avatar, setAvatar] = useState(null); // Добавлено состояние для аватара
   const [currentUserId, setCurrentUserId] = useState(null); 
 
@@ -26,35 +23,6 @@ const EditProfileScreen = ({ navigation }) => {
   };
 
   useEffect(() => {
-    const requestLocationPermission = async () => {
-      if (Platform.OS === 'android') {
-        const granted = await PermissionsAndroid.request(
-          PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION
-        );
-
-        if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-          console.log('Location permission granted');
-        } else {
-          console.log('Location permission denied');
-          return;
-        }
-      }
-    };
-
-    requestLocationPermission();
-
-    Geolocation.getCurrentPosition(
-      (position) => {
-        const { latitude, longitude } = position.coords;
-        setLatitude(latitude);
-        setLongitude(longitude);
-      },
-      (error) => {
-        console.error('Ошибка получения геопозиции', error);
-      },
-      { enableHighAccuracy: true, timeout: 20000, maximumAge: 1000 }
-    );
-
     getUserId();
   }, []);
 
@@ -66,8 +34,6 @@ const EditProfileScreen = ({ navigation }) => {
       const formData = new FormData();
       formData.append('bio', bio);
       formData.append('age', age);
-      formData.append('latitude', latitude);
-      formData.append('longitude', longitude);
 
       if(avatar){
         formData.append('avatar', {

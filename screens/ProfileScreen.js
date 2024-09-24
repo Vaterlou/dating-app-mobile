@@ -81,6 +81,13 @@ const ProfileScreen = ({ navigation, route }) => {
           setLoading(true);
           fetchProfileData(token);
         }} />
+        <TouchableOpacity style={styles.exitBtn} onPress={() => {
+            AsyncStorage.removeItem('token');
+            AsyncStorage.removeItem('user_id');
+            navigation.navigate('LoginByEmail');
+          }}>
+          <Text style={styles.textExitBtn}>Выйти</Text> 
+        </TouchableOpacity>
       </View>
     );
   }
@@ -97,8 +104,14 @@ const ProfileScreen = ({ navigation, route }) => {
     <View style={styles.container}>
       <Image source={{ uri: `${apiUrl}/static/profile_pics/${currentUserId}/${userData.profile_picture}` }} style={styles.avatar} />
       <Text style={styles.title}>Профиль</Text>
-      <Text style={styles.text}>Биография: {userData.bio}</Text>
+      <Text style={styles.text}>Имя : {userData.name}</Text>
+      {/* <Text style={styles.text}>Биография: {userData.bio}</Text> */}
       <Text style={styles.text}>Возраст: {userData.age}</Text>
+      {userData.questions_answers && Object.entries(userData.questions_answers).map(([question, answer], index) => (
+        <View key={index} style={styles.questionAnswerContainer}>
+          <Text style={styles.text}><Text style={styles.boldText}>{question}</Text>: {answer}</Text>
+        </View>
+      ))}
 
       {currentUserId == userId && (
         <Button title="Изменить профиль" onPress={() => navigation.navigate('EditProfile')} />
@@ -106,7 +119,7 @@ const ProfileScreen = ({ navigation, route }) => {
       <TouchableOpacity style={styles.exitBtn} onPress={() => {
           AsyncStorage.removeItem('token');
           AsyncStorage.removeItem('user_id');
-          navigation.navigate('Login');
+          navigation.navigate('LoginByEmail');
         }}>
         <Text style={styles.textExitBtn}>Выйти</Text> 
       </TouchableOpacity>
@@ -117,19 +130,23 @@ const ProfileScreen = ({ navigation, route }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f8f8f8',
-    textAlign: 'center',
+    backgroundColor: 'white',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  questionAnswerContainer: {
+    // borderColor: 'green',  // Красная граница контейнера
+    // borderWidth: 2,      // Толщина границы 2 пикселя
   },
   avatar: {
     width: '100%',
     height: '50%',
+    resizeMode: 'cover',
   },
   exitBtn: {
    backgroundColor: 'red',
-   textAlign: 'center',
-   borderColor: 'red',  // Красная граница контейнера
-   borderWidth: 2,     // Толщина границы 2 пикселя
-   margin: 100,
+   borderRadius: 30,
+   width: '30%',
   },
   textExitBtn: {
     fontSize: 25,
@@ -146,6 +163,13 @@ const styles = StyleSheet.create({
     fontSize: 18,
     color: '#333',
     marginBottom: 10,
+    textAlign: 'center',
+  },
+  boldText: {
+    fontSize: 18,
+    color: '#333',
+    marginBottom: 10,
+    fontWeight: 'bold',
     textAlign: 'center',
   },
   errorText: {

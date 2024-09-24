@@ -4,6 +4,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
 import Video from 'react-native-video';
 import { apiUrl } from '../config';
+import { getJWToken, getUserId } from '../utils/storageUtils';
 
 const ChatScreen = ({ route }) => {
   const { recipientId, recipientName } = route.params; // Получаем ID и имя получателя из параметров
@@ -17,7 +18,7 @@ const ChatScreen = ({ route }) => {
   useEffect(() => {
     const getToken = async () => {
       try {
-        const storedToken = await AsyncStorage.getItem('token');
+        const storedToken = getJWToken();
         if (storedToken) {
           setToken(storedToken);
         } else {
@@ -30,7 +31,7 @@ const ChatScreen = ({ route }) => {
 
     const getUserId = async () => {
       try {
-        const storedUserId = await AsyncStorage.getItem('user_id');
+        const storedUserId = getUserId();
         if (storedUserId) {
           setCurrentUserId(storedUserId);
         }

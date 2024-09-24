@@ -5,6 +5,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { GoogleSignin, statusCodes } from '@react-native-google-signin/google-signin';
 import { apiUrl } from '../config';
 import { Border, FontSize, FontFamily, Color } from "../GlobalStyles";
+import AboutMyselfScreen from './AboutMyselfScreen';
 
 const saveToken = async (token) => {
   try {
@@ -47,15 +48,21 @@ const LoginByEmailScreen = ({ navigation }) => {
           Alert.alert('Вход успешен!');
           saveToken(data.token);
           saveUserId(data.user_id);
-          navigation.navigate('MainTabs', {
-            screen: 'ProfileStack',
-            params: {
-              screen: 'Profile',
-              params: { 
-                userId: data.user_id
+
+          if(data.go_to_profile) {
+            navigation.navigate('MainTabs', {
+              screen: 'ProfileStack',
+              params: {
+                screen: 'Profile',
+                params: { 
+                  userId: data.user_id
+                },
               },
-            },
-          });
+            });
+          }
+          else
+            navigation.navigate('About', { userId: data.user_id });
+          
         } else {
           Alert.alert('Ошибка входа', data.error);
         }
@@ -67,94 +74,74 @@ const LoginByEmailScreen = ({ navigation }) => {
   };
 
   return (
-    <View style={styles.screen2}>
-    <View style={styles.loginByEmailContainer}>
-      <Image
-        style={[styles.trademarkIcon, styles.iconLayout]}
-        resizeMode="cover"
-        source={require("../assets/trademark.png")}
-      />
+    <View style={styles.loginByEmailScreen}>
+      <Text style={styles.welcomeText}>Welcome to the island</Text>
       <TextInput
         style={styles.input}
         placeholder="Email"
         value={email}
         onChangeText={setEmail}
+        keyboardType="email-address"
+        autoCapitalize="none"
       />
       <TextInput
         style={styles.input}
-        placeholder="Password"
-        secureTextEntry
+        placeholder="Пароль"
         value={password}
         onChangeText={setPassword}
+        secureTextEntry
+        autoCapitalize="none"
       />
-      <TouchableOpacity onPress={handleLogin} style={styles.btnLoginByEmail}>
-        <Text style={styles.loginText}>Login</Text>
+      <TouchableOpacity onPress={handleLogin} style={styles.btnLogin}>
+        <Text style={styles.btnLoginText}>Login</Text>
       </TouchableOpacity>
-    </View>
+      <TouchableOpacity onPress={() => navigation.navigate('Signup')} style={styles.btnSignup}>
+        <Text style={styles.btnSignupText}>SignUp</Text>
+      </TouchableOpacity>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
-  iconLayout: {
-    maxHeight: "100%",
-    maxWidth: "100%",
-    overflow: "hidden",
-  },
-  trademarkIcon: {
-    height: "12.32%",
-    width: "28.96%",
-    top: "8.13%",
-    right: "35.57%",
-    bottom: "79.56%",
-    left: "35.47%",
-    position: "absolute",
-  },
-  container: {
-    backgroundColor: Color.colorMediumpurple,
-    borderRadius: Border.br_mini,
-    height: "100%",
-    bottom: "0%",
-    top: "0%",
-    left: "0%",
-    right: "0%",
-    position: "absolute",
-    width: "100%",
-  },
-  btnLoginByEmail: {
-    backgroundColor: '#6200ee',
-    padding: 15,
-    borderRadius: 10,
-    marginTop: 20,
-  },
-  btnBack: {
-    backgroundColor: '#6200ee',
-    padding: 10,
-    borderRadius: 10,
-    marginTop: 20,
-    marginLeft: -150
-  },
-  screen2: {
-    borderRadius: Border.br_xl,
-    backgroundColor: Color.colorBlack,
-    flex: 1,
-    height: 812,
-    overflow: "hidden",
-    width: "100%",
-  },
-  input: {
-    width: '100%',
-    borderColor: '#bbb',
-    borderWidth: 1,
-    padding: 10,
-    marginVertical: 10,
-    borderRadius: 5,
-  },
-  loginByEmailContainer: {
+  loginByEmailScreen: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    padding: 20,
+    backgroundColor: 'rgba(154, 31, 255, 1)',
+  },
+  welcomeText: {
+    color: '#fff',
+    fontSize: 25,
+  },
+  input: {
+    width: '80%',
+    height: 50,
+    backgroundColor: '#fff',
+    borderRadius: 10,
+    paddingHorizontal: 15,
+    marginVertical: 10,
+    fontSize: 16,
+  },
+  btnLogin: {
+    width: '80%',
+    height: 50,
+    backgroundColor: '#4CAF50',
+    borderRadius: 10,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: 20,
+  },
+  btnLoginText: {
+    color: '#fff',
+    fontSize: 18,
+  },
+  btnSignup: {
+    marginTop: 20,
+  },
+  btnSignupText: {
+    color: '#fff',
+    fontSize: 16,
+    textDecorationLine: 'underline',
   },
 });
 

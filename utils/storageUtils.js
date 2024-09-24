@@ -20,3 +20,8 @@ export const getJWToken = async () => {
     const storedToken = await AsyncStorage.getItem('token');
     return storedToken;
 };
+
+export const getUserId = async () => {
+  const storedUser = await AsyncStorage.getItem('user_id');
+  return storedUser;
+};
